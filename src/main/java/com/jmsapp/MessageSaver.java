@@ -25,9 +25,9 @@ public class MessageSaver {
         connection.start();
 
         // Создаем сессию
-        Session session = connection.createSession(true, Session.SESSION_TRANSACTED);
+        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
-        // Создаем получателя
+        // Создаем очередь
         Destination destination = session.createQueue(queueName);
 
         // Создаем отправителя
@@ -35,17 +35,13 @@ public class MessageSaver {
 
         // Принимаем сообщения
 
-        for (int i = 0; i < 50000; i++) {
-            for (int j = 0; j < 20; j++) {
+        for (int i = 0; i < 20000; i++) {
                 Message message = consumer.receive();
 
                 if (message instanceof TextMessage) {
                     TextMessage textMessage = (TextMessage) message;
                     System.out.println("Recieved message: '" + textMessage.getText() + "'");
                 }
-
-            }
-            session.commit();
         }
         connection.close();
     }

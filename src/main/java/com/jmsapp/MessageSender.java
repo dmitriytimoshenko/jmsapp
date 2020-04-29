@@ -24,9 +24,9 @@ public class MessageSender {
         connection.start();
 
         // Создаем сессию
-        Session session = connection.createSession(true, Session.SESSION_TRANSACTED);
+        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
-        // Создаем получателя
+        // Создаем очередь
         Destination destination = session.createQueue(queueName);
 
         // Создаем отправителя
@@ -35,14 +35,11 @@ public class MessageSender {
         // сообщение для отправки
 
         TextMessage messageOne = session.createTextMessage("Hello, Budas!");
-        messageOne.setJMSDeliveryMode(DeliveryMode.PERSISTENT);
-        for (int i = 0; i < 50000; i++) {
-            for (int j = 0; j < 20; i++) {
+        messageOne.setJMSDeliveryMode(DeliveryMode.NON_PERSISTENT);
+        for (int i = 0; i < 20000; i++) {
+
                 producer.send(messageOne);
                 System.out.println("SEND_QUEUE printing: " + messageOne.getText());
-
-            }
-            session.commit();
 
         }
         connection.close();
