@@ -5,6 +5,9 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
 
 import javax.jms.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class EmbeddedMessageSender {
 
@@ -17,13 +20,14 @@ public class EmbeddedMessageSender {
 
     public void sendFiveMessages() throws JMSException {
 
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         // Создаем Embedded брокер
         BrokerService brokerService = new BrokerService();
         brokerService.setBrokerName(brokerName);
 
         try {
 
-            brokerService.addConnector("vm://" + brokerName);
+            brokerService.addConnector("vm://henry?brokerConfig=xbean:activemq.xml");
 
             brokerService.start();
 
@@ -34,7 +38,7 @@ public class EmbeddedMessageSender {
             connection.start();
 
             // Создаем сессию
-            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Session session = connection.createSession(true, Session.SESSION_TRANSACTED);
 
             // Создаем очередь
             Destination destination = session.createQueue(queueName);
@@ -45,17 +49,25 @@ public class EmbeddedMessageSender {
             // сообщение для отправки
 
             TextMessage messageOne = session.createTextMessage("Hello, Budas!");
-            messageOne.setJMSDeliveryMode(DeliveryMode.NON_PERSISTENT);
-            for (int i = 0; i < 20000; i++) {
+            messageOne.setJMSDeliveryMode(DeliveryMode.PERSISTENT);
 
-                producer.send(messageOne);
-                System.out.println("SEND_QUEUE printing: " + messageOne.getText());
+            System.out.println("Start sending: " + dateFormat.format(new Date()));
 
+            for (int i = 0; i < 1000; i++) {
+                for (int j = 0; j < 100 ; j++) {
+                    producer.send(messageOne);
+                    //System.out.println("SEND_QUEUE printing: " + messageOne.getText());
+                    session.commit();
+                }
             }
+
             connection.close();
+            System.out.println("End sending: " + dateFormat.format(new Date()));
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
     }
 }
