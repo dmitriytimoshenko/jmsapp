@@ -18,7 +18,7 @@ public class EmbeddedMessageSender {
     private static String queueName = "SEND_QUEUE";
 
 
-    public void sendFiveMessages() throws JMSException {
+    public void sendFiveMessages()  {
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         // Создаем Embedded брокер

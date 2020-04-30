@@ -22,16 +22,7 @@ public class EmbeddedMessageSaver {
     public void getFiveMessages() throws JMSException {
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-/*
-        // Создаем Embedded брокер
-        BrokerService brokerService = new BrokerService();
-        brokerService.setBrokerName(brokerName);
 
-        try {
-            brokerService.addConnector("tcp://localhost:61616");
-
-            brokerService.start();
-*/
             ConnectionFactory confactory = new ActiveMQConnectionFactory("vm://" + brokerName);
 
             // Создаем соединение
@@ -64,11 +55,6 @@ public class EmbeddedMessageSaver {
 
             System.out.println("End recieve: " + dateFormat.format(new Date()));
             connection.close();
-/*
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
- */
     }
 }
