@@ -1,5 +1,6 @@
 package com.jmsapp;
 
+import com.jmsapp.interfaces.EmbeddedMessageSaverMBean;
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerFactory;
@@ -10,14 +11,34 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class EmbeddedMessageSaver {
+public class EmbeddedMessageSaver  implements EmbeddedMessageSaverMBean {
 
     // Адрес брокера
-    private static String brokerName = "henry";
+    private String brokerName = "henry";
 
     // Имя очереди
-    private static String queueName = "SEND_QUEUE";
+    private String queueName = "SEND_QUEUE";
 
+
+    @Override
+    public void setBrokerName(String brokerName) {
+
+    }
+
+    @Override
+    public String getBrokerName() {
+        return null;
+    }
+
+    @Override
+    public void setQueueName(String queueName) {
+
+    }
+
+    @Override
+    public String getQueueName() {
+        return null;
+    }
 
     public void getFiveMessages() throws JMSException {
 
@@ -41,12 +62,12 @@ public class EmbeddedMessageSaver {
             // Принимаем сообщения
             System.out.println("Start recieve: " + dateFormat.format(new Date()));
 
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < 10; i++) {
                 for (int j = 0; j < 100; j++) {
                     Message message = consumer.receive();
                     if (message instanceof TextMessage) {
                         TextMessage textMessage = (TextMessage) message;
-                        //System.out.println("Recieved message: '" + textMessage.getText() + "'");
+                        System.out.println("Recieved message: '" + textMessage.getText() + "'");
                         session.commit();
                     }
                 }

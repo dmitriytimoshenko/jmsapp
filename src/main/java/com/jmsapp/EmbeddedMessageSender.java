@@ -1,5 +1,6 @@
 package com.jmsapp;
 
+import com.jmsapp.interfaces.EmbeddedMessageSenderMBean;
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
@@ -9,15 +10,38 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class EmbeddedMessageSender {
+public class EmbeddedMessageSender implements EmbeddedMessageSenderMBean {
 
     // Адрес брокера
-    private static String brokerName = "henry";
+    private  String brokerName = "henry";
 
     // Имя очереди
-    private static String queueName = "SEND_QUEUE";
+    private  String queueName = "SEND_QUEUE";
 
+    @Override
+    public String getBrokerName() {
+        return brokerName;
+    }
 
+    public void setBrokerName(String brokerName) {
+        this.brokerName = brokerName;
+    }
+    @Override
+    public String getQueueName() {
+        return queueName;
+    }
+
+    public void setQueueName(String queueName) {
+        this.queueName = queueName;
+    }
+
+    @Override
+    public void setAttributes(String brokerName, String queueName) {
+        setBrokerName(brokerName);
+        setQueueName(queueName);
+    }
+
+    @Override
     public void sendFiveMessages()  {
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -27,7 +51,7 @@ public class EmbeddedMessageSender {
 
         try {
 
-            brokerService.addConnector("vm://henry?brokerConfig=xbean:activemq.xml");
+            brokerService.addConnector("vm://"+ brokerName+ "?brokerConfig=xbean:activemq.xml");
 
             brokerService.start();
 
@@ -53,7 +77,7 @@ public class EmbeddedMessageSender {
 
             System.out.println("Start sending: " + dateFormat.format(new Date()));
 
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < 10; i++) {
                 for (int j = 0; j < 100 ; j++) {
                     producer.send(messageOne);
                     //System.out.println("SEND_QUEUE printing: " + messageOne.getText());
